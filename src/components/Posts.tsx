@@ -1,27 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import Post from "./Post";
+import { JSX } from 'react';
+import Post from './Post';
+import { useGetDataQuery } from '../store/api';
+import { IPost } from '../interfaces/Post';
 
-const Posts = () => {
-    const [responseData, setResponseData] = useState<any>([]);
-
-
-    useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
-            .then(response => response.json())
-            .then(json => setResponseData(json))
-    }, [])
-
+const Posts = (): JSX.Element => {
+    const {data: posts, isSuccess} = useGetDataQuery({});
 
     return (
-        <div>
-            {responseData.map((el:any, index:any) => {
-                return (
-                    <>
-                        <Post id={el.id} title={el.title} body={el.body}/>
-                    </>
-                )
-            })}
-        </div>
+        isSuccess ? (
+            <div>
+                {posts.map((el: IPost) => <Post id={el.id} title={el.title} body={el.body} key={el.id}/>)}
+            </div>
+        ) : <></>
     );
 };
 
